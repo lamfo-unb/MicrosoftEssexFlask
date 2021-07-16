@@ -75,7 +75,8 @@ def factcheck(texto):
                 #     st.error(texto)
                 # else:
                 #     st.info(texto)
-    except:
+    except Exception as e:
+        print(e)
         lista_textos = ["Website not suported", " <br>"]
     return " <br><br>".join(lista_textos)
 
