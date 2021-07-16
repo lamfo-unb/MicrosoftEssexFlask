@@ -42,7 +42,7 @@ def factcheck(texto):
         else:
             lista_textos.append("<h2>Binary model: LOOKS TRUE </h2>")
 
-        print(list(json[0]))
+        # print(list(json[0]))
 
         result = bert(texto_original)
         if int(result) == 0:
@@ -55,26 +55,28 @@ def factcheck(texto):
 
 
         
+        try:
+            for i in range(len(json)):
+                texto = "<h3>"+ json[i]["text"] + "</h3>"
+                try:
+                    texto +=" Information Author: " + json[i]["claimant"]
+                except:
+                    print(list(json[i]))
+                
+                texto +=". Reviewer: " + json[i]["claimReview"][0].get("publisher").get("name")
+                texto +="""<p><a href='""" + json[i]["claimReview"][0].get("url") + """'onclick="window.open('""" +json[i]["claimReview"][0].get("url") + """'),'_top'" > Read the full review</a></p>"""
 
-        for i in range(len(json)):
-            texto = "<h3>"+ json[i]["text"] + "</h3>"
-            try:
-                texto +=" Information Author: " + json[i]["claimant"]
-            except:
-                print(list(json[i]))
-            
-            texto +=". Reviewer: " + json[i]["claimReview"][0].get("publisher").get("name")
-            texto +="""<p><a href='""" + json[i]["claimReview"][0].get("url") + """'onclick="window.open('""" +json[i]["claimReview"][0].get("url") + """'),'_top'" > Read the full review</a></p>"""
-
-            texto +=" <b>Verdict: " + json[i]["claimReview"][0].get("textualRating") + "</b>"
-            rating = json[i]["claimReview"][0].get("textualRating")
-            lista_textos.append(texto)
-                # if "true" in rating.lower() or "pants on fire" in rating.lower():
-                #     st.success(texto)
-                # elif "false" in rating.lower():
-                #     st.error(texto)
-                # else:
-                #     st.info(texto)
+                texto +=" <b>Verdict: " + json[i]["claimReview"][0].get("textualRating") + "</b>"
+                rating = json[i]["claimReview"][0].get("textualRating")
+                lista_textos.append(texto)
+                    # if "true" in rating.lower() or "pants on fire" in rating.lower():
+                    #     st.success(texto)
+                    # elif "false" in rating.lower():
+                    #     st.error(texto)
+                    # else:
+                    #     st.info(texto)
+        except:
+            print("no info from google")
     except Exception as e:
         print(e)
         lista_textos = ["Website not suported", " <br>"]
