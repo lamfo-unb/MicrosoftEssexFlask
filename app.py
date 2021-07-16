@@ -50,11 +50,11 @@ def factcheck(texto):
         try:
             result = bert(texto_original)
             if int(result) == 0:
-                lista_textos.append("<h2>Binary model: LOOKS FALSE </h2>")
+                lista_textos.append("<h2>Bert model: LOOKS FALSE </h2>")
             elif int(result) == 1:
-                lista_textos.append("<h2>Binary model: LOOKS MISLEADING </h2>")
+                lista_textos.append("<h2>Bert model: LOOKS MISLEADING </h2>")
             else:
-                lista_textos.append("<h2>Binary model: LOOKS TRUE </h2>")
+                lista_textos.append("<h2>Bert model: LOOKS TRUE </h2>")
         except:
             print("error bert")
 
