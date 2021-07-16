@@ -36,21 +36,27 @@ def factcheck(texto):
                     texto = texto[:-10]
 
         lista_textos = []
-        result = classify(texto_original)
-        if int(result) == 0:
-            lista_textos.append("<h2>Binary model: LOOKS FALSE </h2>")
-        else:
-            lista_textos.append("<h2>Binary model: LOOKS TRUE </h2>")
+        try:
+            result = classify(texto_original)
+            if int(result) == 0:
+                lista_textos.append("<h2>Binary model: LOOKS FALSE </h2>")
+            else:
+                lista_textos.append("<h2>Binary model: LOOKS TRUE </h2>")
+        except:
+            print("error binary")
 
         # print(list(json[0]))
 
-        result = bert(texto_original)
-        if int(result) == 0:
-            lista_textos.append("<h2>Binary model: LOOKS FALSE </h2>")
-        elif int(result) == 1:
-            lista_textos.append("<h2>Binary model: LOOKS MISLEADING </h2>")
-        else:
-            lista_textos.append("<h2>Binary model: LOOKS TRUE </h2>")
+        try:
+            result = bert(texto_original)
+            if int(result) == 0:
+                lista_textos.append("<h2>Binary model: LOOKS FALSE </h2>")
+            elif int(result) == 1:
+                lista_textos.append("<h2>Binary model: LOOKS MISLEADING </h2>")
+            else:
+                lista_textos.append("<h2>Binary model: LOOKS TRUE </h2>")
+        except:
+            print("error bert")
 
 
 
