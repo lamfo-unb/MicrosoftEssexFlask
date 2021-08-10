@@ -12,6 +12,8 @@ text_file.close()
 sys.path.append('../')
 from MicrosoftEssexBinary.Production_Cleaner import *
 from MicrosoftEssexBert.bert import *
+import warnings
+warnings.filterwarnings("ignore")
 
 
 
@@ -23,7 +25,7 @@ from MicrosoftEssexBert.bert import *
 
 def factcheck(texto):
     try:
-        print(texto)
+        # print(texto)
         texto_original = texto
         for poi in range(10):
             try:
@@ -36,28 +38,29 @@ def factcheck(texto):
                     texto = texto[:-10]
 
         lista_textos = []
-        try:
-            result = classify(texto_original)
-            if int(result) == 0:
-                lista_textos.append("<h2>Binary model: LOOKS FALSE </h2>")
-            else:
-                lista_textos.append("<h2>Binary model: LOOKS TRUE </h2>")
-        except:
-            print("error binary")
-
-        # print(list(json[0]))
+       
 
         try:
-            result = bert(texto_original)
+            result, probbert = bert(texto_original)
             if int(result) == 0:
-                lista_textos.append("<h2>Bert model: LOOKS FALSE </h2>")
+                lista_textos.append("<h2>Verdict: LOOKS FALSE </h2>")
             elif int(result) == 1:
-                lista_textos.append("<h2>Bert model: LOOKS MISLEADING </h2>")
+                lista_textos.append("<h2>Verdict: LOOKS MISLEADING </h2>")
             else:
-                lista_textos.append("<h2>Bert model: LOOKS TRUE </h2>")
+                lista_textos.append("<h2>Verdict: LOOKS TRUE </h2>")
         except:
             print("error bert")
 
+        
+        try:
+            if probbert < 0.5:
+                result = classify(texto_original)
+                if int(result) == 0:
+                    lista_textos.append("<h2>Verdict: LOOKS FALSE </h2>")
+                else:
+                    lista_textos.append("<h2>Verdict: LOOKS TRUE </h2>")
+        except:
+            print("error binary")
 
 
         
@@ -75,12 +78,7 @@ def factcheck(texto):
                 texto +=" <b>Verdict: " + json[i]["claimReview"][0].get("textualRating") + "</b>"
                 rating = json[i]["claimReview"][0].get("textualRating")
                 lista_textos.append(texto)
-                    # if "true" in rating.lower() or "pants on fire" in rating.lower():
-                    #     st.success(texto)
-                    # elif "false" in rating.lower():
-                    #     st.error(texto)
-                    # else:
-                    #     st.info(texto)
+
         except:
             print("no info from google")
     except Exception as e:
@@ -92,9 +90,7 @@ app = Flask(__name__)
 
 @app.route("/<string:name>")
 def home(name):
-    print(str(name))
-    # return "hello world" + str(name)
-
+    # print(str(name))
     # making requests instance
     reqs = requests.get(str(name).replace("<https>","https://").replace("<barra>","/"))
     
@@ -110,8 +106,6 @@ def home(name):
     texto = texto.replace("The Washington Post"," ")
     texto = texto.replace("search menu menu The Washington Post profile profile Next articles The Washington Post share comment comment"," ")
     print(texto)
-
-    # corpo_do_texto = .....
 
     return factcheck(texto)
 app.run(port = 5000)
